@@ -1,0 +1,46 @@
+{
+  "name": "@elium/mighty-http-layer",
+  "version": "1.0.0",
+  "homepage": "https://github.com/Elium/mighty-http-layer#readme",
+  "author": "Arnaud Bosc <bosc.arno@gmail.com>",
+  "description": "NodeJS Http layer for mighty-js",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf -Rf lib",
+    "typings": "typings install",
+    "build": "npm run clean && tsc -p .",
+    "compile": "rollup -c",
+    "dev": "npm run clean && tsc -p . --watch",
+    "mocha": "mocha lib/tests --recursive",
+    "mocha:watch": "mocha lib/tests --recursive -w",
+    "pretest": "npm run build",
+    "test": "npm run mocha",
+    "test:watch": "npm run build && npm run mocha:watch",
+    "start": "npm run dev",
+    "preversion": "npm test && npm run compile",
+    "postversion": "git push --follow-tags"
+  },
+  "repository": {
+    "url": "git+https://github.com/Elium/mighty-http-layer.git"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "hapi": "^13.4.1",
+    "mocha": "^2.5.3",
+    "rimraf": "^2.5.2",
+    "rollup": "^0.32.0",
+    "rollup-plugin-buble": "^0.11.0",
+    "rollup-plugin-typescript": "^0.7.6",
+    "typescript": "^1.8.2",
+    "typings": "^1.0.4"
+  },
+  "dependencies": {
+    "@elium/mighty-http-adapter": "^1.1.1",
+    "@elium/mighty-js": "^1.2.1",
+    "request": "^2.72.0",
+    "rxjs": "^5.0.0-beta.9"
+  },
+  "bugs": {
+    "url": "https://github.com/Elium/mighty-http-layer/issues"
+  }
+}

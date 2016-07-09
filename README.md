@@ -1,6 +1,6 @@
-# Welcome to the Mighty JS (MJS) Http Adapter
+# Welcome to the Mighty JS (MJS) Http layer
 
-[![Build Status](https://travis-ci.org/Elium/mighty-http-adapter.svg?branch=master)](https://travis-ci.org/Elium/mighty-http-adapter)
+[![Build Status](https://travis-ci.org/Elium/mighty-http-layer.svg?branch=master)](https://travis-ci.org/Elium/mighty-http-layer)
 
 ## Installation
 

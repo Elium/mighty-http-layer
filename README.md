@@ -4,7 +4,7 @@
 
 ## Installation
 
-NodeJS is required. Use the folling commands to bootstrap your application :
+NodeJS is required. Use the following commands to bootstrap your application :
 
 - `npm install`
 - `npm run typings`

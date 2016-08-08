@@ -1,50 +1,48 @@
-import * as _ from "lodash";
 import * as Request from "request";
 import {Options} from "request";
 import {IncomingMessage} from "http";
-import {Observer, Observable} from "rxjs/Rx";
-import {IDataLayer, IHttpRequest, IHttpResponse, HttpResponse} from '@elium/mighty-http-adapter';
+import {IDataLayer, IHttpRequest, IHttpResponse, HttpResponse, HttpRequest} from '@elium/mighty-http-adapter';
 
 export interface IHttpLayer extends IDataLayer {}
 
 export class HttpLayer implements IHttpLayer {
 
-  public find(request: IHttpRequest): Observable<IHttpResponse> {
-    const localRequest: IHttpRequest = request.merge(<IHttpRequest> {method: "GET", isArray: true});
+  public find(request: IHttpRequest): Promise<IHttpResponse> {
+    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "GET", isArray: true});
     return this._query(localRequest);
   }
 
 
-  public findOne(request: IHttpRequest): Observable<IHttpResponse> {
-    const localRequest: IHttpRequest = request.merge(<IHttpRequest> {method: "GET"});
+  public findOne(request: IHttpRequest): Promise<IHttpResponse> {
+    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "GET"});
     return this._query(localRequest);
   }
 
 
-  public create(request: IHttpRequest): Observable<IHttpResponse> {
-    const localRequest: IHttpRequest = request.merge(<IHttpRequest> {method: "POST"});
+  public create(request: IHttpRequest): Promise<IHttpResponse> {
+    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "POST"});
     return this._query(localRequest);
   }
 
 
-  public save(request: IHttpRequest): Observable<IHttpResponse> {
-    const localRequest: IHttpRequest = request.merge(<IHttpRequest> {method: "PUT"});
+  public save(request: IHttpRequest): Promise<IHttpResponse> {
+    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "PUT"});
     return this._query(localRequest);
   }
 
 
-  public destroy(request: IHttpRequest): Observable<IHttpResponse> {
-    const localRequest: IHttpRequest = request.merge(<IHttpRequest> {method: "DELETE"});
+  public destroy(request: IHttpRequest): Promise<IHttpResponse> {
+    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "DELETE"});
     return this._query(localRequest);
   }
 
-  protected _query(request: IHttpRequest): Observable<IHttpResponse> {
+  protected _query(request: IHttpRequest): Promise<IHttpResponse> {
     const options = this._getOptions(request);
     return this._request(request, options);
   }
 
-  private _request(request: IHttpRequest, options: Options): Observable<IHttpResponse> {
-    return Observable.create((observer: Observer<IHttpResponse>) => {
+  private _request(request: IHttpRequest, options: Options): Promise<IHttpResponse> {
+    return new Promise((resolve, reject) => {
       Request(options, (error: any, response: IncomingMessage, body: any) => {
         const httpResponse = new HttpResponse();
         if (!error) {
@@ -62,9 +60,9 @@ export class HttpLayer implements IHttpLayer {
         }
 
         if (httpResponse.error) {
-          observer.error(httpResponse);
+          reject(httpResponse);
         } else {
-          observer.next(httpResponse);
+          resolve(httpResponse);
         }
       });
     });

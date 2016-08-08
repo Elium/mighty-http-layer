@@ -31,7 +31,7 @@ describe("Http layer", () => {
 
   beforeEach((done) => {
     adapter.create(resource, deadpoolCreateRequest)
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => {
         deadpoolResponse = response;
         done();
       });
@@ -43,7 +43,7 @@ describe("Http layer", () => {
 
   it(`should find a record when id is within the criteria`, (done) => {
     adapter.findOne(resource, new HttpRequest({criteria: {id: deadpoolResponse.data["id"]}}))
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => {
         checkHero(deadpool, response.data);
         done();
       });
@@ -51,7 +51,7 @@ describe("Http layer", () => {
 
   it(`should find a record when id is within the data`, (done) => {
     adapter.findOne(resource, new HttpRequest({data: deadpoolResponse.data}))
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => {
         checkHero(deadpool, response.data);
         done();
       });
@@ -59,7 +59,7 @@ describe("Http layer", () => {
 
   it(`should get all records`, (done) => {
     adapter.find(resource, new HttpRequest({}))
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => {
         expect(_.isArray(response.data)).to.be.true;
         done();
       });
@@ -71,7 +71,7 @@ describe("Http layer", () => {
       data: _.omit(_.extend(deadpoolResponse.data, {name: "lifepool"}), ["id"])
     });
     adapter.save(resource, request)
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => {
         const hero = response.data;
         expect(hero).not.to.be.undefined;
         expect(hero).to.have.property("name").that.equals("lifepool");
@@ -82,7 +82,7 @@ describe("Http layer", () => {
   it(`should save a record when id is within the data`, (done) => {
     const request = new HttpRequest({data: _.extend(deadpoolResponse.data, {name: "lifepool"})});
     adapter.save(resource, request)
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => {
         const hero = response.data;
         expect(hero).not.to.be.undefined;
         expect(hero).to.have.property("name").that.equals("lifepool");
@@ -92,8 +92,8 @@ describe("Http layer", () => {
 
   it(`should delete a record when id is within the criteria`, (done) => {
     adapter.destroy(resource, new HttpRequest({criteria: {id: deadpoolResponse.data["id"]}}))
-      .concatMap((response: IHttpResponse) => adapter.findOne(resource, new HttpRequest({criteria: {id: response.data["id"]}})))
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => adapter.findOne(resource, new HttpRequest({criteria: {id: response.data["id"]}})))
+      .then((response: IHttpResponse) => {
         expect(response.data).to.be.undefined;
         done();
       });
@@ -101,8 +101,8 @@ describe("Http layer", () => {
 
   it(`should delete a record when id is within the data`, (done) => {
     adapter.destroy(resource, new HttpRequest({data: deadpoolResponse.data}))
-      .concatMap((response: IHttpResponse) => adapter.findOne(resource, new HttpRequest({data: response.data})))
-      .subscribe((response: IHttpResponse) => {
+      .then((response: IHttpResponse) => adapter.findOne(resource, new HttpRequest({data: response.data})))
+      .then((response: IHttpResponse) => {
         expect(response.data).to.be.undefined;
         done();
       });

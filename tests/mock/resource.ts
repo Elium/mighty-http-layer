@@ -1,22 +1,16 @@
-import {IJsonSchema, IResource, Resource, IAdapter, IRecord} from "@elium/mighty-js";
+import {IResource, Resource, IAdapter, IRecord, ISchema} from "@elium/mighty-js";
 import {url} from "./server";
 import {IDataLayer, RestAdapter} from '@elium/mighty-http-adapter';
 import {HttpLayer} from '../../src/http.layer';
 
-export const schema: IJsonSchema = {
-  id: "heroes",
-  description: "Heroes schema",
+export const schema: ISchema = {
+  identity: "heroes",
   properties: {
-    id: {
-      type: "number",
-      minimum: 1
-    },
+    id: { type: "number" },
     name: {type: "string"},
     powers: {
       type: "array",
-      items: {type: "string"},
-      minItems: 1,
-      uniqueItems: true
+      items: {type: "string"}
     }
   }
 };

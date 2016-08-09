@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as chai from "chai";
-import {server} from "./mock/server";
-import {adapter, resource} from "./mock/resource";
+import {server, url} from "./mock/server";
+import {adapter, resource, layer} from "./mock/resource";
 import {deadpool} from "./mock/data";
 import {IHttpRequest, HttpRequest, IHttpResponse} from '@elium/mighty-http-adapter';
 
@@ -39,6 +39,16 @@ describe("Http layer", () => {
 
   it(`should create a record`, () => {
     checkHero(deadpool, deadpoolResponse.data);
+  });
+
+  it(`should return a response with the original request inside`, (done) => {
+    const getUrl = `${url}/${resource.schema.identity}/${deadpoolResponse.data["id"]}`;
+    layer.findOne(new HttpRequest({url: getUrl, method: "GET"}))
+      .then((response) => {
+        console.log(response.request);
+        expect(response.request).not.to.be.undefined;
+        done()
+      });
   });
 
   it(`should find a record when id is within the criteria`, (done) => {

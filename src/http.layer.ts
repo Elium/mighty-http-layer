@@ -45,18 +45,14 @@ export class HttpLayer implements IHttpLayer {
     return new Promise((resolve, reject) => {
       Request(options, (error: any, response: IncomingMessage, body: any) => {
         const httpResponse = new HttpResponse();
-        if (!error) {
-          if (response.statusCode == 200) {
-            if (request.isArray && !Array.isArray(body)) {
-              httpResponse.error = new Error("result is not an array, got :" + JSON.stringify(body));
-            } else {
-              httpResponse.data = body;
-            }
+        if (!error && response.statusCode == 200) {
+          if (request.isArray && !Array.isArray(body)) {
+            httpResponse.error = new Error("result is not an array, got :" + JSON.stringify(body));
           } else {
-            httpResponse.error = new Error(error.message);
+            httpResponse.data = body;
           }
         } else {
-          httpResponse.error = new Error(error.message);
+          httpResponse.error = new Error(error || body);
         }
 
         if (httpResponse.error) {

@@ -1,12 +1,17 @@
-import * as _ from "lodash";
-import * as chai from "chai";
-import {server, url} from "./mock/server";
-import {adapter, resource, layer} from "./mock/resource";
-import {deadpool} from "./mock/data";
-import {IHttpRequest, HttpRequest, IHttpResponse} from '@elium/mighty-http-adapter';
+import * as _ from 'lodash';
+import * as chai from 'chai';
+import {server, url} from './mock/server';
+import {Resource} from '@elium/mighty-js';
+import {IHttpRequest, HttpRequest, IHttpResponse, RestAdapter} from '@elium/mighty-http-adapter';
+import {HeroData, HeroRecord} from './mock/hero.data';
+import {HttpLayer} from '../src/http.layer';
 
 const expect = chai.expect;
-const deadpoolCreateRequest: IHttpRequest = new HttpRequest({data: deadpool});
+const heroData = new HeroData();
+const layer = new HttpLayer();
+const adapter = new RestAdapter(url, layer);
+const resource = new Resource("heroes", HeroRecord, adapter);
+const deadpoolCreateRequest: IHttpRequest = new HttpRequest({data: heroData.deadpool});
 
 let deadpoolResponse: IHttpResponse;
 
@@ -38,11 +43,11 @@ describe("Http layer", () => {
   });
 
   it(`should create a record`, () => {
-    checkHero(deadpool, deadpoolResponse.data);
+    checkHero(heroData.deadpool, deadpoolResponse.data);
   });
 
   it(`should return a response with the original request inside`, (done) => {
-    const getUrl = `${url}/${resource.schema.identity}/${deadpoolResponse.data["id"]}`;
+    const getUrl = `${url}/${resource.identity}/${deadpoolResponse.data["id"]}`;
     layer.findOne(new HttpRequest({url: getUrl, method: "GET"}))
       .then((response) => {
         console.log(response.request);
@@ -54,7 +59,7 @@ describe("Http layer", () => {
   it(`should find a record when id is within the criteria`, (done) => {
     adapter.findOne(resource, new HttpRequest({criteria: {id: deadpoolResponse.data["id"]}}))
       .then((response: IHttpResponse) => {
-        checkHero(deadpool, response.data);
+        checkHero(heroData.deadpool, response.data);
         done();
       });
   });
@@ -62,7 +67,7 @@ describe("Http layer", () => {
   it(`should find a record when id is within the data`, (done) => {
     adapter.findOne(resource, new HttpRequest({data: deadpoolResponse.data}))
       .then((response: IHttpResponse) => {
-        checkHero(deadpool, response.data);
+        checkHero(heroData.deadpool, response.data);
         done();
       });
   });

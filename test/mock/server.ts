@@ -1,13 +1,13 @@
 import * as _ from "lodash";
 import * as Hapi from "hapi";
-import {heroes as mockHeroes} from "./data";
+import {HeroData} from './hero.data';
 
 export const url: string = "http://0.0.0.0:8000";
 export const server = new Hapi.Server();
 server.connection({ host: '0.0.0.0', port: 8000 });
 
 let id = 4;
-let heroes = _.cloneDeep(mockHeroes);
+let heroes = _.cloneDeep(new HeroData().db);
 
 // find
 server.route({

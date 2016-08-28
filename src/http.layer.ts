@@ -54,7 +54,7 @@ export class HttpLayer implements IHttpLayer {
             httpResponse.data = body;
           }
         } else {
-          httpResponse.error = new Error(error || body);
+          httpResponse.error = this._parseError(error, body);
         }
 
         if (httpResponse.error) {
@@ -75,5 +75,17 @@ export class HttpLayer implements IHttpLayer {
       body: request.data,
       qs: request.params
     }
+  }
+  
+  private _parseError(error: any, body: any) {
+    const validError = error || body;
+    if(validError) {
+      if(_.isString(validError)) {
+        return new Error(validError);
+      } else if(_.isObject(validError) && validError.hasOwnProperty("message")) {
+        return new Error(validError.message)
+      }
+    }
+    return new Error("Unknown error : " + validError);
   }
 }

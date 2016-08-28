@@ -3,40 +3,42 @@ import {Options} from "request";
 import {IncomingMessage} from "http";
 import {IDataLayer, IHttpRequest, IHttpResponse, HttpResponse, HttpRequest} from '@elium/mighty-http-adapter';
 
-export interface IHttpLayer extends IDataLayer {}
+export interface IHttpLayer extends IDataLayer {
+  query(request: IHttpRequest): Promise<IHttpResponse>;
+}
 
 export class HttpLayer implements IHttpLayer {
 
-  public find(request: IHttpRequest): Promise<IHttpResponse> {
+  find(request: IHttpRequest): Promise<IHttpResponse> {
     const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "GET", isArray: true});
-    return this._query(localRequest);
+    return this.query(localRequest);
   }
 
 
-  public findOne(request: IHttpRequest): Promise<IHttpResponse> {
+  findOne(request: IHttpRequest): Promise<IHttpResponse> {
     const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "GET"});
-    return this._query(localRequest);
+    return this.query(localRequest);
   }
 
 
-  public create(request: IHttpRequest): Promise<IHttpResponse> {
+  create(request: IHttpRequest): Promise<IHttpResponse> {
     const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "POST"});
-    return this._query(localRequest);
+    return this.query(localRequest);
   }
 
 
-  public save(request: IHttpRequest): Promise<IHttpResponse> {
+  save(request: IHttpRequest): Promise<IHttpResponse> {
     const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "PUT"});
-    return this._query(localRequest);
+    return this.query(localRequest);
   }
 
 
-  public destroy(request: IHttpRequest): Promise<IHttpResponse> {
+  destroy(request: IHttpRequest): Promise<IHttpResponse> {
     const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "DELETE"});
-    return this._query(localRequest);
+    return this.query(localRequest);
   }
 
-  protected _query(request: IHttpRequest): Promise<IHttpResponse> {
+  query(request: IHttpRequest): Promise<IHttpResponse> {
     const options = this._getOptions(request);
     return this._request(request, options);
   }
@@ -44,7 +46,7 @@ export class HttpLayer implements IHttpLayer {
   private _request(request: IHttpRequest, options: Options): Promise<IHttpResponse> {
     return new Promise((resolve, reject) => {
       Request(options, (error: any, response: IncomingMessage, body: any) => {
-        const httpResponse = new HttpResponse({request: request});
+        const httpResponse = new HttpResponse(<IHttpResponse> {request: request, status: response.statusCode});
         if (!error && response.statusCode == 200) {
           if (request.isArray && !Array.isArray(body)) {
             httpResponse.error = new Error("result is not an array, got :" + JSON.stringify(body));

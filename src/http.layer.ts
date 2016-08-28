@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as Request from "request";
 import {Options} from "request";
 import {IncomingMessage} from "http";

@@ -10,7 +10,7 @@ const expect = chai.expect;
 const heroData = new HeroData();
 const layer = new HttpLayer();
 const adapter = new RestAdapter(url, layer);
-const resource = new Resource("heroes", HeroRecord, adapter);
+const resource = new Resource("heroes", HeroRecord);
 const deadpoolCreateRequest: IHttpRequest = new HttpRequest({data: heroData.deadpool});
 
 let deadpoolResponse: IHttpResponse;
@@ -22,14 +22,12 @@ describe("Http layer", () => {
       if (error) {
         throw error;
       }
-      //console.log('Server started at: ' + server.info.uri);
       done();
     });
   });
 
   after((done) => {
     server.stop({timeout: 0}, () => {
-      //console.log("Server stopped");
       done();
     });
   });
@@ -39,7 +37,8 @@ describe("Http layer", () => {
       .then((response: IHttpResponse) => {
         deadpoolResponse = response;
         done();
-      });
+      })
+      .catch(error => console.error(error));
   });
 
   it(`should create a record`, () => {
@@ -48,16 +47,15 @@ describe("Http layer", () => {
 
   it(`should return a response with the original request inside`, (done) => {
     const getUrl = `${url}/${resource.identity}/${deadpoolResponse.data["id"]}`;
-    layer.findOne(new HttpRequest({url: getUrl, method: "GET"}))
+    layer.findOne({url: getUrl, method: "GET"})
       .then((response) => {
-        console.log(response.request);
         expect(response.request).not.to.be.undefined;
         done()
       });
   });
 
   it(`should find a record when id is within the criteria`, (done) => {
-    adapter.findOne(resource, new HttpRequest({criteria: {id: deadpoolResponse.data["id"]}}))
+    adapter.findOne(resource, {criteria: {id: deadpoolResponse.data["id"]}})
       .then((response: IHttpResponse) => {
         checkHero(heroData.deadpool, response.data);
         done();
@@ -65,7 +63,7 @@ describe("Http layer", () => {
   });
 
   it(`should find a record when id is within the data`, (done) => {
-    adapter.findOne(resource, new HttpRequest({data: deadpoolResponse.data}))
+    adapter.findOne(resource, {data: deadpoolResponse.data})
       .then((response: IHttpResponse) => {
         checkHero(heroData.deadpool, response.data);
         done();
@@ -73,7 +71,7 @@ describe("Http layer", () => {
   });
 
   it(`should get all records`, (done) => {
-    adapter.find(resource, new HttpRequest({}))
+    adapter.find(resource, {})
       .then((response: IHttpResponse) => {
         expect(_.isArray(response.data)).to.be.true;
         done();
@@ -81,10 +79,10 @@ describe("Http layer", () => {
   });
 
   it(`should save a record when id is within the criteria`, (done) => {
-    const request = new HttpRequest({
+    const request = {
       criteria: {id: deadpoolResponse.data["id"]},
       data: _.omit(_.extend(deadpoolResponse.data, {name: "lifepool"}), ["id"])
-    });
+    };
     adapter.save(resource, request)
       .then((response: IHttpResponse) => {
         const hero = response.data;
@@ -95,7 +93,7 @@ describe("Http layer", () => {
   });
 
   it(`should save a record when id is within the data`, (done) => {
-    const request = new HttpRequest({data: _.extend(deadpoolResponse.data, {name: "lifepool"})});
+    const request = {data: _.extend(deadpoolResponse.data, {name: "lifepool"})};
     adapter.save(resource, request)
       .then((response: IHttpResponse) => {
         const hero = response.data;
@@ -106,7 +104,7 @@ describe("Http layer", () => {
   });
 
   it(`should delete a record when id is within the criteria`, (done) => {
-    adapter.destroy(resource, new HttpRequest({criteria: {id: deadpoolResponse.data["id"]}}))
+    adapter.destroy(resource, {criteria: {id: deadpoolResponse.data["id"]}})
       .then((response: IHttpResponse) => adapter.findOne(resource, new HttpRequest({criteria: {id: response.data["id"]}})))
       .then((response: IHttpResponse) => {
         expect(response.data).to.be.undefined;
@@ -115,7 +113,7 @@ describe("Http layer", () => {
   });
 
   it(`should delete a record when id is within the data`, (done) => {
-    adapter.destroy(resource, new HttpRequest({data: deadpoolResponse.data}))
+    adapter.destroy(resource, {data: deadpoolResponse.data})
       .then((response: IHttpResponse) => adapter.findOne(resource, new HttpRequest({data: response.data})))
       .then((response: IHttpResponse) => {
         expect(response.data).to.be.undefined;

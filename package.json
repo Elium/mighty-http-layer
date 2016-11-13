@@ -6,7 +6,6 @@
   "description": "NodeJS Http layer for mighty-js",
   "license": "MIT",
   "scripts": {
-    "typings": "typings install",
     "build": "gulp build",
     "dev": "gulp dev",
     "start": "npm run dev",
@@ -22,12 +21,19 @@
     "url": "git+https://github.com/Elium/mighty-http-layer.git"
   },
   "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/core-js": "^0.9.34",
+    "@types/hapi": "^13.0.37",
+    "@types/lodash": "^4.14.38",
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.46",
+    "@types/request": "^0.0.33",
     "chai": "^3.5.0",
     "coveralls": "^2.11.12",
     "del": "^2.2.1",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-typescript": "^2.13.6",
+    "gulp-typescript": "^3.1.2",
     "hapi": "^14.2.0",
     "istanbul": "^0.4.4",
     "lodash": "^4.12.0",
@@ -35,12 +41,12 @@
     "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.2.0",
     "run-sequence": "^1.2.2",
-    "typescript": "^1.8.2",
-    "typings": "^1.0.4"
+    "typescript": "^2.0.8"
   },
   "dependencies": {
-    "@elium/mighty-http-adapter": "^3.1.0",
-    "@elium/mighty-js": "^3.0.0",
+    "@elium/mighty-http-adapter": "^4.0.5",
+    "@elium/mighty-js": "^4.2.0",
+    "hapi": "^15.2.0",
     "request": "^2.72.0"
   },
   "bugs": {

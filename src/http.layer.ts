@@ -11,31 +11,31 @@ export interface IHttpLayer extends IDataLayer {
 export class HttpLayer implements IHttpLayer {
 
   find(request: IHttpRequest): Promise<IHttpResponse> {
-    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "GET", isArray: true});
+    const localRequest: IHttpRequest = new HttpRequest(_.merge(request, {method: "GET", isArray: true}));
     return this.query(localRequest);
   }
 
 
   findOne(request: IHttpRequest): Promise<IHttpResponse> {
-    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "GET"});
+    const localRequest: IHttpRequest = new HttpRequest(_.merge(request, {method: "GET", isArray: false}));
     return this.query(localRequest);
   }
 
 
   create(request: IHttpRequest): Promise<IHttpResponse> {
-    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "POST"});
+    const localRequest: IHttpRequest = new HttpRequest(_.merge(request, {method: "POST"}));
     return this.query(localRequest);
   }
 
 
   save(request: IHttpRequest): Promise<IHttpResponse> {
-    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "PUT"});
+    const localRequest: IHttpRequest = new HttpRequest(_.merge(request, {method: "PUT"}));
     return this.query(localRequest);
   }
 
 
   destroy(request: IHttpRequest): Promise<IHttpResponse> {
-    const localRequest: IHttpRequest = new HttpRequest(request).merge(<IHttpRequest> {method: "DELETE"});
+    const localRequest: IHttpRequest = new HttpRequest(_.merge(request, {method: "DELETE"}));
     return this.query(localRequest);
   }
 
@@ -77,7 +77,7 @@ export class HttpLayer implements IHttpLayer {
       qs: request.params
     }
   }
-  
+
   private _parseError(error: any, body: any) {
     const validError = error || body;
     if(validError) {

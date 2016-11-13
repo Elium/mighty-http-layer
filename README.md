@@ -7,7 +7,6 @@
 NodeJS is required. Use the following commands to bootstrap your application :
 
 - `npm install`
-- `npm run typings`
 - `npm run build`
 
 To launch tests :

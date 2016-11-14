@@ -44,8 +44,8 @@
     "typescript": "^2.0.8"
   },
   "dependencies": {
-    "@elium/mighty-http-adapter": "^4.0.5",
-    "@elium/mighty-js": "^4.2.0",
+    "@elium/mighty-http-adapter": "^4.1.0",
+    "@elium/mighty-js": "^4.2.2",
     "hapi": "^15.2.0",
     "request": "^2.72.0"
   },

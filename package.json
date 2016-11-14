@@ -1,6 +1,6 @@
 {
   "name": "@elium/mighty-http-layer",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "homepage": "https://github.com/Elium/mighty-http-layer#readme",
   "author": "Arnaud Bosc <bosc.arno@gmail.com>",
   "description": "NodeJS Http layer for mighty-js",

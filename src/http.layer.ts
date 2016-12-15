@@ -73,6 +73,7 @@ export class HttpLayer implements IHttpLayer {
       url: request.url,
       method: (request.method || "").toUpperCase(),
       headers: request.headers,
+      gzip: _.get(request.headers, 'accept-encoding', '').indexOf('gzip') > -1,
       body: request.data,
       qs: request.params
     }
